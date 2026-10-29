@@ -19,4 +19,13 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          git push --force https://sevden123:$HF_TOKEN@huggingface.co/spaces/sevden123/prism-spectra main:main
+          if [ -z "$HF_TOKEN" ]; then
+            echo "::error::HF_TOKEN secret is not set in GitHub repository secrets!"
+            exit 1
+          fi
+          git config --global user.email "sevdenurgudul@gmail.com"
+          git config --global user.name "sevdenur99"
+          git config --global credential.helper store
+          echo "https://sevden123:${HF_TOKEN}@huggingface.co" > ~/.git-credentials
+          git remote add space https://huggingface.co/spaces/sevden123/prism-spectra
+          git push --force space main:main
