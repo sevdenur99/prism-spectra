@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aetheris v2.0 | Spektral & Sirkadiyen Model Boru Hattı</title>
+  <meta name="description" content="Oyun İçi Gerçek Zamanlı Spektral Kestirim, Açısal Heterojenlik, Ekran Yaşlanması ve Ortam Aydınlatması Sirkadiyen Değerlendirme Çerçevesi">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="nav-container">
+      <div class="logo-area">
+        <div class="logo-badge">🌈 AETHERIS</div>
+        <div class="logo-text">
+          <h1>Spektral & Sirkadiyen Hesaplama Çerçevesi</h1>
+          <p>TÜBİTAK 1001 &bull; Sevdenur Güdül &amp; Rümeysa &bull; Danışman: Prof. Dr. Nurettin Şenyer</p>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <div id="connectionStatus" class="status-indicator">
+          <span class="status-dot"></span> Yerel Simülatör (Hazır)
+        </div>
+        <button id="btnOpenSettings" class="btn-secondary">
+          ⚙️ Hugging Face Endpoint'leri
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 3 Aşamalı Boru Hattı Bilgi Çubuğu -->
+  <div class="pipeline-bar">
+    <div class="stepper">
+      <div class="step-card step-1">
+        <div class="step-num">1</div>
+        <div class="step-info">
+          <h3>PRISM-Theta (Açısal Tayf)</h3>
+          <p>[R,G,B, x,y, θ] &rarr; SPD₀(λ) Ham Spektrum</p>
+        </div>
+      </div>
+      <div class="step-card step-2">
+        <div class="step-num">2</div>
+        <div class="step-info">
+          <h3>Yaşlanma Modülatörü (ATLAS)</h3>
+          <p>g(t) Stretched-Exponential Panel Aşınması</p>
+        </div>
+      </div>
+      <div class="step-card step-3">
+        <div class="step-num">3</div>
+        <div class="step-info">
+          <h3>Ortam &amp; Sirkadiyen Biyoloji</h3>
+          <p>CIE S 026 m-EDI, CS, Melatonin &amp; Faz Kayması</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ana İçerik Grid -->
+  <main class="main-container">
+
+    <!-- Sol Sütun: Kontroller -->
+    <section class="controls-panel">
+
+      <!-- Hazır Oyun Senaryoları -->
+      <div>
+        <div class="label-row">
+          <span style="font-size:12px; font-weight:700; color:#fff;">🎮 HAZIR OYUN SENARYOLARI</span>
+          <span style="font-size:10px; color:#9ca3af;">Tek tıkla yükle</span>
+        </div>
+        <div class="preset-grid">
+          <div class="preset-card" data-preset="cyberpunk">
+            <span class="preset-dot" style="background:#06b6d4; box-shadow:0 0 8px #06b6d4;"></span>
+            <span class="preset-name">Cyberpunk 2077</span>
+          </div>
+          <div class="preset-card" data-preset="valorant">
+            <span class="preset-dot" style="background:#38bdf8; box-shadow:0 0 8px #38bdf8;"></span>
+            <span class="preset-name">Valorant (Icebox)</span>
+          </div>
+          <div class="preset-card" data-preset="cs2">
+            <span class="preset-dot" style="background:#f59e0b; box-shadow:0 0 8px #f59e0b;"></span>
+            <span class="preset-name">CS2 (Mirage)</span>
+          </div>
+          <div class="preset-card" data-preset="lol">
+            <span class="preset-dot" style="background:#10b981; box-shadow:0 0 8px #10b981;"></span>
+            <span class="preset-name">League of Legends</span>
+          </div>
+          <div class="preset-card" data-preset="gtav">
+            <span class="preset-dot" style="background:#f97316; box-shadow:0 0 8px #f97316;"></span>
+            <span class="preset-name">GTA V (Sunset)</span>
+          </div>
+          <div class="preset-card" data-preset="eldenring">
+            <span class="preset-dot" style="background:#78716c; box-shadow:0 0 8px #78716c;"></span>
+            <span class="preset-name">Elden Ring</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1. MODEL: PRISM-Theta -->
+      <div class="section-box">
+        <div class="section-title title-cyan">
+          <span>📐 1. PRISM-Theta (Açı &amp; Renk)</span>
+        </div>
+
+        <div class="control-group">
+          <div class="label-row">
+            <span>Kırmızı (R)</span>
+            <span id="valR" class="val-badge">15</span>
+          </div>
+          <input type="range" id="sliderR" min="0" max="255" value="15">
+        </div>
+        <div class="control-group">
+          <div class="label-row">
+            <span>Yeşil (G)</span>
+            <span id="valG" class="val-badge">140</span>
+          </div>
+          <input type="range" id="sliderG" min="0" max="255" value="140">
+        </div>
+        <div class="control-group">
+          <div class="label-row">
+            <span>Mavi (B)</span>
+            <span id="valB" class="val-badge">255</span>
+          </div>
+          <input type="range" id="sliderB" min="0" max="255" value="255">
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+          <div class="control-group">
+            <div class="label-row">
+              <span>Uzamsal X</span>
+              <span id="valX" class="val-badge">0.5</span>
+            </div>
+            <input type="range" id="sliderX" min="0" max="1" step="0.05" value="0.5">
+          </div>
+          <div class="control-group">
+            <div class="label-row">
+              <span>Uzamsal Y</span>
+              <span id="valY" class="val-badge">0.5</span>
+            </div>
+            <input type="range" id="sliderY" min="0" max="1" step="0.05" value="0.5">
+          </div>
+        </div>
+
+        <div class="control-group" style="margin-top:10px;">
+          <div class="label-row">
+            <span style="color:#38bdf8; font-weight:700;">İzleme Açısı θ (Theta)</span>
+            <span id="valTheta" class="val-badge" style="color:#38bdf8; border-color:#38bdf8;">15°</span>
+          </div>
+          <input type="range" id="sliderTheta" min="0" max="80" value="15">
+        </div>
+      </div>
+
+      <!-- 2. MODEL: Ekran Yaşlanması -->
+      <div class="section-box">
+        <div class="section-title title-amber">
+          <span>⏳ 2. Ekran Yaşlanması (ATLAS)</span>
+        </div>
+
+        <div class="control-group">
+          <div class="label-row">
+            <span>Toplam Çalışma Saati</span>
+            <span id="valHours" class="val-badge">5000 h</span>
+          </div>
+          <input type="range" id="sliderHours" min="0" max="25000" step="250" value="5000">
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div class="control-group">
+            <div class="label-row"><span>Oyuncu Profili</span></div>
+            <select id="selectProfile">
+              <option value="S1">S1: Casual (1-2 sa)</option>
+              <option value="S2" selected>S2: Core (3-5 sa)</option>
+              <option value="S3">S3: Heavy (8-12+ sa)</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <div class="label-row"><span>Ortam Senaryosu</span></div>
+            <select id="selectScenario">
+              <option value="E1" selected>E1: Serin (22°C)</option>
+              <option value="E2">E2: Sıcak (32°C)</option>
+              <option value="E3">E3: Kafe (40°C)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="control-group" style="margin-top:10px;">
+          <div class="label-row">
+            <span>Ekran Parlaklığı (B)</span>
+            <span id="valBright" class="val-badge">0.6</span>
+          </div>
+          <input type="range" id="sliderBright" min="0.1" max="1.0" step="0.05" value="0.6">
+        </div>
+      </div>
+
+      <!-- 3. MODEL: Ortam & Biyoloji -->
+      <div class="section-box">
+        <div class="section-title title-green">
+          <span>🌙 3. Ortam Aydınlatması &amp; Sirkadiyen</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div class="control-group">
+            <div class="label-row">
+              <span>Ortam Lüksü</span>
+              <span id="valAmbLux" class="val-badge">30 lx</span>
+            </div>
+            <input type="range" id="sliderAmbLux" min="0" max="500" step="5" value="30">
+          </div>
+          <div class="control-group">
+            <div class="label-row">
+              <span>Ortam CCT</span>
+              <span id="valAmbCct" class="val-badge">3000 K</span>
+            </div>
+            <input type="range" id="sliderAmbCct" min="2000" max="6500" step="100" value="3000">
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+          <div class="control-group">
+            <div class="label-row">
+              <span>Mesafe (cm)</span>
+              <span id="valDist" class="val-badge">50 cm</span>
+            </div>
+            <input type="range" id="sliderDist" min="30" max="100" step="5" value="50">
+          </div>
+          <div class="control-group">
+            <div class="label-row">
+              <span>Gözlemci Yaşı</span>
+              <span id="valAge" class="val-badge">25 yaş</span>
+            </div>
+            <input type="range" id="sliderAge" min="15" max="75" step="1" value="25">
+          </div>
+        </div>
+
+        <div class="control-group" style="margin-top:10px;">
+          <div class="label-row">
+            <span>Oturum Süresi</span>
+            <span id="valDuration" class="val-badge">3.0 sa</span>
+          </div>
+          <input type="range" id="sliderDuration" min="0.5" max="8.0" step="0.5" value="3.0">
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Sağ Sütun: Spektrum Grafiği & Sirkadiyen Metrikler -->
+    <section class="visualization-panel">
+
+      <!-- Spektrum Grafik Kartı -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">
+            <h2>Spektral Güç Dağılımı (SPD) [380 – 780 nm]</h2>
+            <p>1 nm Çözünürlüklü Sürekli Tayf ve Eğri Kıyaslamaları</p>
+          </div>
+          <div class="chart-toggles">
+            <span id="chipSpd0" class="toggle-chip active-blue">1. Ham SPD₀ (θ)</span>
+            <span id="chipSpdAging" class="toggle-chip active-amber">2. Yaşlanmış SPD</span>
+            <span id="chipSpdCornea" class="toggle-chip active-green">3. Kornea SPD (Ortam)</span>
+          </div>
+        </div>
+
+        <div id="spectrumPlot"></div>
+
+        <!-- Spektral Lejant Çubukları -->
+        <div class="spectral-badges">
+          <div class="badge-item">
+            <div class="badge-header" style="color:#60a5fa;">
+              <span style="width:8px; height:8px; border-radius:50%; background:#3b82f6;"></span>
+              Mavi Pik Bölgesi
+            </div>
+            <div class="badge-desc">435–465 nm (LED Emisyonu)</div>
+          </div>
+          <div class="badge-item">
+            <div class="badge-header" style="color:#22d3ee;">
+              <span style="width:8px; height:8px; border-radius:50%; background:#06b6d4;"></span>
+              Melanopik Eşik
+            </div>
+            <div class="badge-desc">490 nm (ipRGC Max Duyarlılık)</div>
+          </div>
+          <div class="badge-item">
+            <div class="badge-header" style="color:#4ade80;">
+              <span style="width:8px; height:8px; border-radius:50%; background:#22c55e;"></span>
+              Fotopik Aydınlık
+            </div>
+            <div class="badge-desc">555 nm (Gündüz Görme V(λ))</div>
+          </div>
+          <div class="badge-item">
+            <div class="badge-header" style="color:#f87171;">
+              <span style="width:8px; height:8px; border-radius:50%; background:#ef4444;"></span>
+              Güvenli Kırmızı
+            </div>
+            <div class="badge-desc">620–780 nm (Sıfır ipRGC Yükü)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Biyolojik Risk Banner -->
+      <div id="riskBanner" class="risk-banner">
+        <div class="risk-info">
+          <h4 id="riskTitle">Biyolojik Durum Değerlendirmesi</h4>
+          <p id="riskDesc">Analiz sonuçları yükleniyor...</p>
+        </div>
+        <span id="riskTag" class="risk-tag">GÜVENLİ</span>
+      </div>
+
+      <!-- Sirkadiyen Metrik Kartları Grid -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-label">Melanopik EDI (m-EDI)</div>
+          <div id="valMedi" class="metric-value" style="color:#38bdf8;">--</div>
+          <div class="metric-sub">CIE S 026:2018 Eşdeğer Lüks</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Sirkadiyen Uyaran (CS)</div>
+          <div id="valCs" class="metric-value" style="color:#a855f7;">--</div>
+          <div class="metric-sub">Rea &amp; Figueiro Skalası (0.0 - 0.7)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Fotopik Lüks (Ev)</div>
+          <div id="valPhotopic" class="metric-value" style="color:#f59e0b;">--</div>
+          <div class="metric-sub">CIE 1931 Korneal Görsel Lüks</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">M / P Oranı</div>
+          <div id="valMp" class="metric-value" style="color:#10b981;">--</div>
+          <div class="metric-sub">Melanopik / Fotopik Oran</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Melatonin Baskısı</div>
+          <div id="valSuppression" class="metric-value" style="color:#ec4899;">--</div>
+          <div class="metric-sub">Duffy &amp; Czeisler Doz-Cevap (%)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Uyku Fazı Kayması</div>
+          <div id="valPhaseShift" class="metric-value" style="color:#ef4444;">--</div>
+          <div class="metric-sub">Zeitzer/Duffy Uyku Gecikmesi (saat)</div>
+        </div>
+      </div>
+
+      <!-- Telemetri ve Panel Bilgisi -->
+      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px;">
+        <div class="metric-card" style="padding:10px 14px;">
+          <div class="metric-label" style="font-size:10px;">Açısal Katsayı cos(θ)</div>
+          <div id="valCosTheta" class="mono" style="font-size:16px; font-weight:700; color:#38bdf8;">×0.97</div>
+        </div>
+        <div class="metric-card" style="padding:10px 14px;">
+          <div class="metric-label" style="font-size:10px;">Panel Sağlığı g(t)</div>
+          <div id="valGt" class="mono" style="font-size:16px; font-weight:700; color:#f59e0b;">%92</div>
+        </div>
+        <div class="metric-card" style="padding:10px 14px;">
+          <div class="metric-label" style="font-size:10px;">Çıkarım Gecikmesi</div>
+          <div id="valLatency" class="mono" style="font-size:16px; font-weight:700; color:#10b981;">0.3 ms</div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Hugging Face Endpoint Yapılandırma Modal -->
+  <div id="endpointModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>⚙️ Hugging Face Space Endpoint Ayarları</h3>
+        <button id="btnCloseModal" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:11px; color:#9ca3af; line-height:1.4;">
+          Hugging Face üzerinde oluşturduğunuz Space alanlarının REST endpoint adreslerini buraya girebilirsiniz. Boş bırakıldığında web sayfası yerleşik ultra-hızlı istemci matematiksel motorunu kullanmaya devam eder.
+        </p>
+
+        <div class="input-box">
+          <label>1. PRISM-Theta Endpoint URL (POST /predict):</label>
+          <input type="text" id="inputEndpointTheta" placeholder="https://username-prism-theta.hf.space/predict">
+        </div>
+        <div class="input-box">
+          <label>2. MODULATOR-Aging Endpoint URL (POST /predict):</label>
+          <input type="text" id="inputEndpointAging" placeholder="https://username-modulator-aging.hf.space/predict">
+        </div>
+        <div class="input-box">
+          <label>3. MODULATOR-Ambient Endpoint URL (POST /predict):</label>
+          <input type="text" id="inputEndpointAmbient" placeholder="https://username-modulator-ambient.hf.space/predict">
+        </div>
+        <div class="input-box" style="border-top:1px solid rgba(255,255,255,0.08); padding-top:10px; margin-top:4px;">
+          <label style="color:#a855f7;">Hugging Face Unified Space URL (Varsayılan: sevden123/prism-spectra):</label>
+          <input type="text" id="inputEndpointUnified" placeholder="https://sevden123-prism-spectra.hf.space">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnSaveEndpoints" class="btn-primary">Kaydet &amp; Bağlan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>Aetheris v2.0 &bull; TÜBİTAK 1001 Araştırma Projesi &bull; Samsun Üniversitesi &bull; Penn State University Illumination Lab</p>
+    <p style="margin-top:4px; color:#64748b; font-size:10px;">Elsevier Displays Q1 &bull; Sevdenur Güdül &amp; Rümeysa &bull; Danışman: Prof. Dr. Nurettin Şenyer</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
