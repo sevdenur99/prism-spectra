@@ -503,7 +503,7 @@ with gr.Blocks(title="PRISM-Spectra v2.2", css=custom_css, theme=gr.themes.Base(
     gr.Markdown("""
     # 🌈 PRISM-Spectra: Oyun İçi Gerçek Zamanlı Spektral Kestirim ve Sirkadiyen Yük Çerçevesi
     > **Makale Başlığı:** *A Low-Complexity Deep Learning Framework for In-Game Real-Time Spectral Estimation and Melanopic Load Assessment*  
-    > **Yazarlar:** Sevdenur Güdül & Rümeysa &bull; Samsun Üniversitesi &bull; **Danışman:** Prof. Dr. Nurettin Şenyer  
+    > **Yazarlar:** Sevdenur Güdül & Rümeysa &bull; Samsun Üniversitesi &bull; **Danışman:** Dr. Nurettin Şenyer  
     > **Uluslararası İş Birliği:** Dr. Dorukalp Durmuş &bull; Pennsylvania State University (PSU) Illumination Lab
     """)
 

@@ -16,7 +16,7 @@ short_description: In-Game Real-Time Spectral & Circadian Load
 > **Research Paper:** *A Low-Complexity Deep Learning Framework for In-Game Real-Time Spectral Estimation and Melanopic Load Assessment*  
 > **Authors:** Sevdenur Güdül & Rümeysa  
 > **Affiliation:** Samsun University, Department of Computer Engineering  
-> **Advisor:** Prof. Dr. Nurettin Şenyer  
+> **Advisor:** Dr. Nurettin Şenyer  
 > **International Collaboration:** Dr. Dorukalp Durmuş (Pennsylvania State University Illumination Lab)  
 
 ---
